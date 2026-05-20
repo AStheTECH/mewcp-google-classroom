@@ -2,3 +2,8 @@ authenticate_google_classroom.py
 token.json
 secret.json
 
+venv
+./venv
+/venv
+__pycache__
+*.pyc

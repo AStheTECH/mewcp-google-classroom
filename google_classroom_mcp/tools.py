@@ -3,7 +3,7 @@ import logging
 
 from fastmcp import FastMCP
 
-from .schemas import JsonStringToolResponse, OAuthTokenData
+from .schemas import JsonStringToolResponse
 from .service import get_service
 
 logger = logging.getLogger("google-classroom-mcp-server")
@@ -32,7 +32,7 @@ def register_tools(real_mcp: FastMCP) -> None:
 
 
 @mcp.tool()
-def list_courses(oauth_token: OAuthTokenData, student_id: str = None, teacher_id: str = None, course_states: str = None, page_size: int = None, page_token: str = None) -> JsonStringToolResponse:
+def list_courses(student_id: str = None, teacher_id: str = None, course_states: str = None, page_size: int = None, page_token: str = None) -> JsonStringToolResponse:
     """
     Returns a list of courses that the requesting user is permitted to view, restricted to those that match the criteria.
 
@@ -45,7 +45,7 @@ def list_courses(oauth_token: OAuthTokenData, student_id: str = None, teacher_id
     :return: A JSON string of the list of courses.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         response = service.courses().list(
             studentId=student_id,
             teacherId=teacher_id,
@@ -59,7 +59,7 @@ def list_courses(oauth_token: OAuthTokenData, student_id: str = None, teacher_id
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def get_course(oauth_token: OAuthTokenData, id: str) -> JsonStringToolResponse:
+def get_course(id: str) -> JsonStringToolResponse:
     """
     Returns a course.
 
@@ -68,7 +68,7 @@ def get_course(oauth_token: OAuthTokenData, id: str) -> JsonStringToolResponse:
     :return: A JSON string of the course.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         response = service.courses().get(id=id).execute()
         return json.dumps(response)
     except Exception as e:
@@ -76,7 +76,7 @@ def get_course(oauth_token: OAuthTokenData, id: str) -> JsonStringToolResponse:
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def create_course(oauth_token: OAuthTokenData, body: str) -> JsonStringToolResponse:
+def create_course(body: str) -> JsonStringToolResponse:
     """
     Creates a course.
 
@@ -85,7 +85,7 @@ def create_course(oauth_token: OAuthTokenData, body: str) -> JsonStringToolRespo
     :return: A JSON string of the created course.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         course = json.loads(body)
         response = service.courses().create(body=course).execute()
         return json.dumps(response)
@@ -94,7 +94,7 @@ def create_course(oauth_token: OAuthTokenData, body: str) -> JsonStringToolRespo
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def update_course(oauth_token: OAuthTokenData, id: str, body: str) -> JsonStringToolResponse:
+def update_course(id: str, body: str) -> JsonStringToolResponse:
     """
     Updates a course.
 
@@ -104,7 +104,7 @@ def update_course(oauth_token: OAuthTokenData, id: str, body: str) -> JsonString
     :return: A JSON string of the updated course.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         course = json.loads(body)
         response = service.courses().update(id=id, body=course).execute()
         return json.dumps(response)
@@ -113,7 +113,7 @@ def update_course(oauth_token: OAuthTokenData, id: str, body: str) -> JsonString
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def patch_course(oauth_token: OAuthTokenData, id: str, update_mask: str, body: str) -> JsonStringToolResponse:
+def patch_course(id: str, update_mask: str, body: str) -> JsonStringToolResponse:
     """
     Updates a course. This method is an alias for update(), but only fields specified in updateMask are updated.
 
@@ -124,7 +124,7 @@ def patch_course(oauth_token: OAuthTokenData, id: str, update_mask: str, body: s
     :return: A JSON string of the updated course.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         course = json.loads(body)
         response = service.courses().patch(id=id, updateMask=update_mask, body=course).execute()
         return json.dumps(response)
@@ -133,7 +133,7 @@ def patch_course(oauth_token: OAuthTokenData, id: str, update_mask: str, body: s
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def delete_course(oauth_token: OAuthTokenData, id: str) -> JsonStringToolResponse:
+def delete_course(id: str) -> JsonStringToolResponse:
     """
     Deletes a course.
 
@@ -142,7 +142,7 @@ def delete_course(oauth_token: OAuthTokenData, id: str) -> JsonStringToolRespons
     :return: An empty JSON string if successful.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         response = service.courses().delete(id=id).execute()
         return json.dumps(response)
     except Exception as e:
@@ -150,7 +150,7 @@ def delete_course(oauth_token: OAuthTokenData, id: str) -> JsonStringToolRespons
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def create_course_alias(oauth_token: OAuthTokenData, course_id: str, body: str) -> JsonStringToolResponse:
+def create_course_alias(course_id: str, body: str) -> JsonStringToolResponse:
     """
     Creates an alias for a course.
 
@@ -160,7 +160,7 @@ def create_course_alias(oauth_token: OAuthTokenData, course_id: str, body: str) 
     :return: A JSON string of the created alias.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         alias = json.loads(body)
         response = service.courses().aliases().create(courseId=course_id, body=alias).execute()
         return json.dumps(response)
@@ -169,7 +169,7 @@ def create_course_alias(oauth_token: OAuthTokenData, course_id: str, body: str) 
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def list_course_aliases(oauth_token: OAuthTokenData, course_id: str, page_size: int = None, page_token: str = None) -> JsonStringToolResponse:
+def list_course_aliases(course_id: str, page_size: int = None, page_token: str = None) -> JsonStringToolResponse:
     """
     Returns a list of aliases for a course.
 
@@ -180,7 +180,7 @@ def list_course_aliases(oauth_token: OAuthTokenData, course_id: str, page_size: 
     :return: A JSON string of the list of aliases.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         response = service.courses().aliases().list(courseId=course_id, pageSize=page_size, pageToken=page_token).execute()
         return json.dumps(response)
     except Exception as e:
@@ -188,7 +188,7 @@ def list_course_aliases(oauth_token: OAuthTokenData, course_id: str, page_size: 
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def delete_course_alias(oauth_token: OAuthTokenData, course_id: str, alias: str) -> JsonStringToolResponse:
+def delete_course_alias(course_id: str, alias: str) -> JsonStringToolResponse:
     """
     Deletes an alias of a course.
 
@@ -198,7 +198,7 @@ def delete_course_alias(oauth_token: OAuthTokenData, course_id: str, alias: str)
     :return: An empty JSON string if successful.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         response = service.courses().aliases().delete(courseId=course_id, alias=alias).execute()
         return json.dumps(response)
     except Exception as e:
@@ -206,7 +206,7 @@ def delete_course_alias(oauth_token: OAuthTokenData, course_id: str, alias: str)
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def create_announcement(oauth_token: OAuthTokenData, course_id: str, body: str) -> JsonStringToolResponse:
+def create_announcement(course_id: str, body: str) -> JsonStringToolResponse:
     """
     Creates an announcement.
 
@@ -216,7 +216,7 @@ def create_announcement(oauth_token: OAuthTokenData, course_id: str, body: str) 
     :return: A JSON string of the created announcement.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         announcement = json.loads(body)
         response = service.courses().announcements().create(courseId=course_id, body=announcement).execute()
         return json.dumps(response)
@@ -225,7 +225,7 @@ def create_announcement(oauth_token: OAuthTokenData, course_id: str, body: str) 
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def list_announcements(oauth_token: OAuthTokenData, course_id: str, announcement_states: str = None, order_by: str = None, page_size: int = None, page_token: str = None) -> JsonStringToolResponse:
+def list_announcements(course_id: str, announcement_states: str = None, order_by: str = None, page_size: int = None, page_token: str = None) -> JsonStringToolResponse:
     """
     Returns a list of announcements that the requester is permitted to view.
 
@@ -238,7 +238,7 @@ def list_announcements(oauth_token: OAuthTokenData, course_id: str, announcement
     :return: A JSON string of the list of announcements.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         response = service.courses().announcements().list(
             courseId=course_id,
             announcementStates=announcement_states,
@@ -252,7 +252,7 @@ def list_announcements(oauth_token: OAuthTokenData, course_id: str, announcement
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def get_announcement(oauth_token: OAuthTokenData, course_id: str, id: str) -> JsonStringToolResponse:
+def get_announcement(course_id: str, id: str) -> JsonStringToolResponse:
     """
     Returns an announcement.
 
@@ -262,7 +262,7 @@ def get_announcement(oauth_token: OAuthTokenData, course_id: str, id: str) -> Js
     :return: A JSON string of the announcement.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         response = service.courses().announcements().get(courseId=course_id, id=id).execute()
         return json.dumps(response)
     except Exception as e:
@@ -270,7 +270,7 @@ def get_announcement(oauth_token: OAuthTokenData, course_id: str, id: str) -> Js
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def patch_announcement(oauth_token: OAuthTokenData, course_id: str, id: str, update_mask: str, body: str) -> JsonStringToolResponse:
+def patch_announcement(course_id: str, id: str, update_mask: str, body: str) -> JsonStringToolResponse:
     """
     Updates an announcement.
 
@@ -282,7 +282,7 @@ def patch_announcement(oauth_token: OAuthTokenData, course_id: str, id: str, upd
     :return: A JSON string of the updated announcement.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         announcement = json.loads(body)
         response = service.courses().announcements().patch(courseId=course_id, id=id, updateMask=update_mask, body=announcement).execute()
         return json.dumps(response)
@@ -291,7 +291,7 @@ def patch_announcement(oauth_token: OAuthTokenData, course_id: str, id: str, upd
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def delete_announcement(oauth_token: OAuthTokenData, course_id: str, id: str) -> JsonStringToolResponse:
+def delete_announcement(course_id: str, id: str) -> JsonStringToolResponse:
     """
     Deletes an announcement.
 
@@ -301,7 +301,7 @@ def delete_announcement(oauth_token: OAuthTokenData, course_id: str, id: str) ->
     :return: An empty JSON string if successful.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         response = service.courses().announcements().delete(courseId=course_id, id=id).execute()
         return json.dumps(response)
     except Exception as e:
@@ -309,7 +309,7 @@ def delete_announcement(oauth_token: OAuthTokenData, course_id: str, id: str) ->
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def modify_announcement_assignees(oauth_token: OAuthTokenData, course_id: str, id: str, body: str) -> JsonStringToolResponse:
+def modify_announcement_assignees(course_id: str, id: str, body: str) -> JsonStringToolResponse:
     """
     Modifies assignee mode and options of an announcement.
 
@@ -320,7 +320,7 @@ def modify_announcement_assignees(oauth_token: OAuthTokenData, course_id: str, i
     :return: A JSON string of the modified announcement.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         modifications = json.loads(body)
         response = service.courses().announcements().modifyAssignees(courseId=course_id, id=id, body=modifications).execute()
         return json.dumps(response)
@@ -329,7 +329,7 @@ def modify_announcement_assignees(oauth_token: OAuthTokenData, course_id: str, i
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def create_course_work(oauth_token: OAuthTokenData, course_id: str, body: str) -> JsonStringToolResponse:
+def create_course_work(course_id: str, body: str) -> JsonStringToolResponse:
     """
     Creates course work.
 
@@ -339,7 +339,7 @@ def create_course_work(oauth_token: OAuthTokenData, course_id: str, body: str) -
     :return: A JSON string of the created course work.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         course_work = json.loads(body)
         response = service.courses().courseWork().create(courseId=course_id, body=course_work).execute()
         return json.dumps(response)
@@ -348,7 +348,7 @@ def create_course_work(oauth_token: OAuthTokenData, course_id: str, body: str) -
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def list_course_work(oauth_token: OAuthTokenData, course_id: str, course_work_states: str = None, order_by: str = None, page_size: int = None, page_token: str = None) -> JsonStringToolResponse:
+def list_course_work(course_id: str, course_work_states: str = None, order_by: str = None, page_size: int = None, page_token: str = None) -> JsonStringToolResponse:
     """
     Returns a list of course work that the requester is permitted to view.
 
@@ -361,7 +361,7 @@ def list_course_work(oauth_token: OAuthTokenData, course_id: str, course_work_st
     :return: A JSON string of the list of course work.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         response = service.courses().courseWork().list(
             courseId=course_id,
             courseWorkStates=course_work_states,
@@ -375,7 +375,7 @@ def list_course_work(oauth_token: OAuthTokenData, course_id: str, course_work_st
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def get_course_work(oauth_token: OAuthTokenData, course_id: str, id: str) -> JsonStringToolResponse:
+def get_course_work(course_id: str, id: str) -> JsonStringToolResponse:
     """
     Returns course work.
 
@@ -385,7 +385,7 @@ def get_course_work(oauth_token: OAuthTokenData, course_id: str, id: str) -> Jso
     :return: A JSON string of the course work.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         response = service.courses().courseWork().get(courseId=course_id, id=id).execute()
         return json.dumps(response)
     except Exception as e:
@@ -393,7 +393,7 @@ def get_course_work(oauth_token: OAuthTokenData, course_id: str, id: str) -> Jso
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def patch_course_work(oauth_token: OAuthTokenData, course_id: str, id: str, update_mask: str, body: str) -> JsonStringToolResponse:
+def patch_course_work(course_id: str, id: str, update_mask: str, body: str) -> JsonStringToolResponse:
     """
     Updates course work.
 
@@ -405,7 +405,7 @@ def patch_course_work(oauth_token: OAuthTokenData, course_id: str, id: str, upda
     :return: A JSON string of the updated course work.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         course_work = json.loads(body)
         response = service.courses().courseWork().patch(courseId=course_id, id=id, updateMask=update_mask, body=course_work).execute()
         return json.dumps(response)
@@ -414,7 +414,7 @@ def patch_course_work(oauth_token: OAuthTokenData, course_id: str, id: str, upda
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def delete_course_work(oauth_token: OAuthTokenData, course_id: str, id: str) -> JsonStringToolResponse:
+def delete_course_work(course_id: str, id: str) -> JsonStringToolResponse:
     """
     Deletes course work.
 
@@ -424,7 +424,7 @@ def delete_course_work(oauth_token: OAuthTokenData, course_id: str, id: str) -> 
     :return: An empty JSON string if successful.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         response = service.courses().courseWork().delete(courseId=course_id, id=id).execute()
         return json.dumps(response)
     except Exception as e:
@@ -432,7 +432,7 @@ def delete_course_work(oauth_token: OAuthTokenData, course_id: str, id: str) -> 
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def modify_course_work_assignees(oauth_token: OAuthTokenData, course_id: str, id: str, body: str) -> JsonStringToolResponse:
+def modify_course_work_assignees(course_id: str, id: str, body: str) -> JsonStringToolResponse:
     """
     Modifies assignee mode and options of a course work.
 
@@ -443,7 +443,7 @@ def modify_course_work_assignees(oauth_token: OAuthTokenData, course_id: str, id
     :return: A JSON string of the modified course work.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         modifications = json.loads(body)
         response = service.courses().courseWork().modifyAssignees(courseId=course_id, id=id, body=modifications).execute()
         return json.dumps(response)
@@ -452,7 +452,7 @@ def modify_course_work_assignees(oauth_token: OAuthTokenData, course_id: str, id
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def get_student_submission(oauth_token: OAuthTokenData, course_id: str, course_work_id: str, id: str) -> JsonStringToolResponse:
+def get_student_submission(course_id: str, course_work_id: str, id: str) -> JsonStringToolResponse:
     """
     Returns a student submission.
 
@@ -463,7 +463,7 @@ def get_student_submission(oauth_token: OAuthTokenData, course_id: str, course_w
     :return: A JSON string of the student submission.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         response = service.courses().courseWork().studentSubmissions().get(courseId=course_id, courseWorkId=course_work_id, id=id).execute()
         return json.dumps(response)
     except Exception as e:
@@ -471,7 +471,7 @@ def get_student_submission(oauth_token: OAuthTokenData, course_id: str, course_w
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def list_student_submissions(oauth_token: OAuthTokenData, course_id: str, course_work_id: str, user_id: str = None, states: str = None, page_size: int = None, page_token: str = None) -> JsonStringToolResponse:
+def list_student_submissions(course_id: str, course_work_id: str, user_id: str = None, states: str = None, page_size: int = None, page_token: str = None) -> JsonStringToolResponse:
     """
     Returns a list of student submissions that the requester is permitted to view.
 
@@ -485,7 +485,7 @@ def list_student_submissions(oauth_token: OAuthTokenData, course_id: str, course
     :return: A JSON string of the list of student submissions.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         response = service.courses().courseWork().studentSubmissions().list(
             courseId=course_id,
             courseWorkId=course_work_id,
@@ -500,7 +500,7 @@ def list_student_submissions(oauth_token: OAuthTokenData, course_id: str, course
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def patch_student_submission(oauth_token: OAuthTokenData, course_id: str, course_work_id: str, id: str, update_mask: str, body: str) -> JsonStringToolResponse:
+def patch_student_submission(course_id: str, course_work_id: str, id: str, update_mask: str, body: str) -> JsonStringToolResponse:
     """
     Updates a student submission.
 
@@ -513,7 +513,7 @@ def patch_student_submission(oauth_token: OAuthTokenData, course_id: str, course
     :return: A JSON string of the updated student submission.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         submission = json.loads(body)
         response = service.courses().courseWork().studentSubmissions().patch(
             courseId=course_id,
@@ -528,7 +528,7 @@ def patch_student_submission(oauth_token: OAuthTokenData, course_id: str, course
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def return_student_submission(oauth_token: OAuthTokenData, course_id: str, course_work_id: str, id: str) -> JsonStringToolResponse:
+def return_student_submission(course_id: str, course_work_id: str, id: str) -> JsonStringToolResponse:
     """
     Returns a student submission.
 
@@ -539,7 +539,7 @@ def return_student_submission(oauth_token: OAuthTokenData, course_id: str, cours
     :return: An empty JSON string if successful.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         response = service.courses().courseWork().studentSubmissions().return_conflict(courseId=course_id, courseWorkId=course_work_id, id=id).execute()
         return json.dumps(response)
     except Exception as e:
@@ -547,7 +547,7 @@ def return_student_submission(oauth_token: OAuthTokenData, course_id: str, cours
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def reclaim_student_submission(oauth_token: OAuthTokenData, course_id: str, course_work_id: str, id: str) -> JsonStringToolResponse:
+def reclaim_student_submission(course_id: str, course_work_id: str, id: str) -> JsonStringToolResponse:
     """
     Reclaims a student submission on behalf of the student that owns it.
 
@@ -558,7 +558,7 @@ def reclaim_student_submission(oauth_token: OAuthTokenData, course_id: str, cour
     :return: An empty JSON string if successful.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         response = service.courses().courseWork().studentSubmissions().reclaim(courseId=course_id, courseWorkId=course_work_id, id=id).execute()
         return json.dumps(response)
     except Exception as e:
@@ -566,7 +566,7 @@ def reclaim_student_submission(oauth_token: OAuthTokenData, course_id: str, cour
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def create_course_work_material(oauth_token: OAuthTokenData, course_id: str, body: str) -> JsonStringToolResponse:
+def create_course_work_material(course_id: str, body: str) -> JsonStringToolResponse:
     """
     Creates course work material.
 
@@ -576,7 +576,7 @@ def create_course_work_material(oauth_token: OAuthTokenData, course_id: str, bod
     :return: A JSON string of the created course work material.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         material = json.loads(body)
         response = service.courses().courseWorkMaterials().create(courseId=course_id, body=material).execute()
         return json.dumps(response)
@@ -585,7 +585,7 @@ def create_course_work_material(oauth_token: OAuthTokenData, course_id: str, bod
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def list_course_work_materials(oauth_token: OAuthTokenData, course_id: str, material_drive_id: str = None, material_link: str = None, page_size: int = None, page_token: str = None) -> JsonStringToolResponse:
+def list_course_work_materials(course_id: str, material_drive_id: str = None, material_link: str = None, page_size: int = None, page_token: str = None) -> JsonStringToolResponse:
     """
     Returns a list of course work materials that the requester is permitted to view.
 
@@ -598,7 +598,7 @@ def list_course_work_materials(oauth_token: OAuthTokenData, course_id: str, mate
     :return: A JSON string of the list of course work materials.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         response = service.courses().courseWorkMaterials().list(
             courseId=course_id,
             materialDriveId=material_drive_id,
@@ -612,7 +612,7 @@ def list_course_work_materials(oauth_token: OAuthTokenData, course_id: str, mate
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def get_course_work_material(oauth_token: OAuthTokenData, course_id: str, id: str) -> JsonStringToolResponse:
+def get_course_work_material(course_id: str, id: str) -> JsonStringToolResponse:
     """
     Returns a course work material.
 
@@ -622,7 +622,7 @@ def get_course_work_material(oauth_token: OAuthTokenData, course_id: str, id: st
     :return: A JSON string of the course work material.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         response = service.courses().courseWorkMaterials().get(courseId=course_id, id=id).execute()
         return json.dumps(response)
     except Exception as e:
@@ -630,7 +630,7 @@ def get_course_work_material(oauth_token: OAuthTokenData, course_id: str, id: st
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def patch_course_work_material(oauth_token: OAuthTokenData, course_id: str, id: str, update_mask: str, body: str) -> JsonStringToolResponse:
+def patch_course_work_material(course_id: str, id: str, update_mask: str, body: str) -> JsonStringToolResponse:
     """
     Updates a course work material.
 
@@ -642,7 +642,7 @@ def patch_course_work_material(oauth_token: OAuthTokenData, course_id: str, id: 
     :return: A JSON string of the updated course work material.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         material = json.loads(body)
         response = service.courses().courseWorkMaterials().patch(courseId=course_id, id=id, updateMask=update_mask, body=material).execute()
         return json.dumps(response)
@@ -651,7 +651,7 @@ def patch_course_work_material(oauth_token: OAuthTokenData, course_id: str, id: 
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def delete_course_work_material(oauth_token: OAuthTokenData, course_id: str, id: str) -> JsonStringToolResponse:
+def delete_course_work_material(course_id: str, id: str) -> JsonStringToolResponse:
     """
     Deletes a course work material.
 
@@ -661,7 +661,7 @@ def delete_course_work_material(oauth_token: OAuthTokenData, course_id: str, id:
     :return: An empty JSON string if successful.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         response = service.courses().courseWorkMaterials().delete(courseId=course_id, id=id).execute()
         return json.dumps(response)
     except Exception as e:
@@ -669,7 +669,7 @@ def delete_course_work_material(oauth_token: OAuthTokenData, course_id: str, id:
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def create_student(oauth_token: OAuthTokenData, course_id: str, enrollment_code: str, body: str) -> JsonStringToolResponse:
+def create_student(course_id: str, enrollment_code: str, body: str) -> JsonStringToolResponse:
     """
     Adds a user as a student of a course.
 
@@ -680,7 +680,7 @@ def create_student(oauth_token: OAuthTokenData, course_id: str, enrollment_code:
     :return: A JSON string of the created student.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         student = json.loads(body)
         response = service.courses().students().create(courseId=course_id, enrollmentCode=enrollment_code, body=student).execute()
         return json.dumps(response)
@@ -689,7 +689,7 @@ def create_student(oauth_token: OAuthTokenData, course_id: str, enrollment_code:
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def list_students(oauth_token: OAuthTokenData, course_id: str, page_size: int = None, page_token: str = None) -> JsonStringToolResponse:
+def list_students(course_id: str, page_size: int = None, page_token: str = None) -> JsonStringToolResponse:
     """
     Returns a list of students of this course that the requester is permitted to view.
 
@@ -700,7 +700,7 @@ def list_students(oauth_token: OAuthTokenData, course_id: str, page_size: int = 
     :return: A JSON string of the list of students.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         response = service.courses().students().list(courseId=course_id, pageSize=page_size, pageToken=page_token).execute()
         return json.dumps(response)
     except Exception as e:
@@ -708,7 +708,7 @@ def list_students(oauth_token: OAuthTokenData, course_id: str, page_size: int = 
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def get_student(oauth_token: OAuthTokenData, course_id: str, user_id: str) -> JsonStringToolResponse:
+def get_student(course_id: str, user_id: str) -> JsonStringToolResponse:
     """
     Returns a student of a course.
 
@@ -718,7 +718,7 @@ def get_student(oauth_token: OAuthTokenData, course_id: str, user_id: str) -> Js
     :return: A JSON string of the student.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         response = service.courses().students().get(courseId=course_id, userId=user_id).execute()
         return json.dumps(response)
     except Exception as e:
@@ -726,7 +726,7 @@ def get_student(oauth_token: OAuthTokenData, course_id: str, user_id: str) -> Js
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def delete_student(oauth_token: OAuthTokenData, course_id: str, user_id: str) -> JsonStringToolResponse:
+def delete_student(course_id: str, user_id: str) -> JsonStringToolResponse:
     """
     Deletes a student of a course.
 
@@ -736,7 +736,7 @@ def delete_student(oauth_token: OAuthTokenData, course_id: str, user_id: str) ->
     :return: An empty JSON string if successful.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         response = service.courses().students().delete(courseId=course_id, userId=user_id).execute()
         return json.dumps(response)
     except Exception as e:
@@ -744,7 +744,7 @@ def delete_student(oauth_token: OAuthTokenData, course_id: str, user_id: str) ->
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def create_teacher(oauth_token: OAuthTokenData, course_id: str, body: str) -> JsonStringToolResponse:
+def create_teacher(course_id: str, body: str) -> JsonStringToolResponse:
     """
     Creates a teacher in a course.
 
@@ -754,7 +754,7 @@ def create_teacher(oauth_token: OAuthTokenData, course_id: str, body: str) -> Js
     :return: A JSON string of the created teacher.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         teacher = json.loads(body)
         response = service.courses().teachers().create(courseId=course_id, body=teacher).execute()
         return json.dumps(response)
@@ -763,7 +763,7 @@ def create_teacher(oauth_token: OAuthTokenData, course_id: str, body: str) -> Js
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def list_teachers(oauth_token: OAuthTokenData, course_id: str, page_size: int = None, page_token: str = None) -> JsonStringToolResponse:
+def list_teachers(course_id: str, page_size: int = None, page_token: str = None) -> JsonStringToolResponse:
     """
     Returns a list of teachers of this course that the requester is permitted to view.
 
@@ -774,7 +774,7 @@ def list_teachers(oauth_token: OAuthTokenData, course_id: str, page_size: int = 
     :return: A JSON string of the list of teachers.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         response = service.courses().teachers().list(courseId=course_id, pageSize=page_size, pageToken=page_token).execute()
         return json.dumps(response)
     except Exception as e:
@@ -782,7 +782,7 @@ def list_teachers(oauth_token: OAuthTokenData, course_id: str, page_size: int = 
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def get_teacher(oauth_token: OAuthTokenData, course_id: str, user_id: str) -> JsonStringToolResponse:
+def get_teacher(course_id: str, user_id: str) -> JsonStringToolResponse:
     """
     Returns a teacher of a course.
 
@@ -792,7 +792,7 @@ def get_teacher(oauth_token: OAuthTokenData, course_id: str, user_id: str) -> Js
     :return: A JSON string of the teacher.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         response = service.courses().teachers().get(courseId=course_id, userId=user_id).execute()
         return json.dumps(response)
     except Exception as e:
@@ -800,7 +800,7 @@ def get_teacher(oauth_token: OAuthTokenData, course_id: str, user_id: str) -> Js
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def delete_teacher(oauth_token: OAuthTokenData, course_id: str, user_id: str) -> JsonStringToolResponse:
+def delete_teacher(course_id: str, user_id: str) -> JsonStringToolResponse:
     """
     Deletes a teacher of a course.
 
@@ -810,7 +810,7 @@ def delete_teacher(oauth_token: OAuthTokenData, course_id: str, user_id: str) ->
     :return: An empty JSON string if successful.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         response = service.courses().teachers().delete(courseId=course_id, userId=user_id).execute()
         return json.dumps(response)
     except Exception as e:
@@ -818,7 +818,7 @@ def delete_teacher(oauth_token: OAuthTokenData, course_id: str, user_id: str) ->
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def create_topic(oauth_token: OAuthTokenData, course_id: str, body: str) -> JsonStringToolResponse:
+def create_topic(course_id: str, body: str) -> JsonStringToolResponse:
     """
     Creates a topic.
 
@@ -828,7 +828,7 @@ def create_topic(oauth_token: OAuthTokenData, course_id: str, body: str) -> Json
     :return: A JSON string of the created topic.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         topic = json.loads(body)
         response = service.courses().topics().create(courseId=course_id, body=topic).execute()
         return json.dumps(response)
@@ -837,7 +837,7 @@ def create_topic(oauth_token: OAuthTokenData, course_id: str, body: str) -> Json
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def list_topics(oauth_token: OAuthTokenData, course_id: str, page_size: int = None, page_token: str = None) -> JsonStringToolResponse:
+def list_topics(course_id: str, page_size: int = None, page_token: str = None) -> JsonStringToolResponse:
     """
     Returns the list of topics that the requester is permitted to view.
 
@@ -848,7 +848,7 @@ def list_topics(oauth_token: OAuthTokenData, course_id: str, page_size: int = No
     :return: A JSON string of the list of topics.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         response = service.courses().topics().list(courseId=course_id, pageSize=page_size, pageToken=page_token).execute()
         return json.dumps(response)
     except Exception as e:
@@ -856,7 +856,7 @@ def list_topics(oauth_token: OAuthTokenData, course_id: str, page_size: int = No
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def get_topic(oauth_token: OAuthTokenData, course_id: str, id: str) -> JsonStringToolResponse:
+def get_topic(course_id: str, id: str) -> JsonStringToolResponse:
     """
     Returns a topic.
 
@@ -866,7 +866,7 @@ def get_topic(oauth_token: OAuthTokenData, course_id: str, id: str) -> JsonStrin
     :return: A JSON string of the topic.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         response = service.courses().topics().get(courseId=course_id, id=id).execute()
         return json.dumps(response)
     except Exception as e:
@@ -874,7 +874,7 @@ def get_topic(oauth_token: OAuthTokenData, course_id: str, id: str) -> JsonStrin
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def patch_topic(oauth_token: OAuthTokenData, course_id: str, id: str, update_mask: str, body: str) -> JsonStringToolResponse:
+def patch_topic(course_id: str, id: str, update_mask: str, body: str) -> JsonStringToolResponse:
     """
     Updates a topic.
 
@@ -886,7 +886,7 @@ def patch_topic(oauth_token: OAuthTokenData, course_id: str, id: str, update_mas
     :return: A JSON string of the updated topic.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         topic = json.loads(body)
         response = service.courses().topics().patch(courseId=course_id, id=id, updateMask=update_mask, body=topic).execute()
         return json.dumps(response)
@@ -895,7 +895,7 @@ def patch_topic(oauth_token: OAuthTokenData, course_id: str, id: str, update_mas
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def delete_topic(oauth_token: OAuthTokenData, course_id: str, id: str) -> JsonStringToolResponse:
+def delete_topic(course_id: str, id: str) -> JsonStringToolResponse:
     """
     Deletes a topic.
 
@@ -905,7 +905,7 @@ def delete_topic(oauth_token: OAuthTokenData, course_id: str, id: str) -> JsonSt
     :return: An empty JSON string if successful.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         response = service.courses().topics().delete(courseId=course_id, id=id).execute()
         return json.dumps(response)
     except Exception as e:
@@ -913,7 +913,7 @@ def delete_topic(oauth_token: OAuthTokenData, course_id: str, id: str) -> JsonSt
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def create_invitation(oauth_token: OAuthTokenData, body: str) -> JsonStringToolResponse:
+def create_invitation(body: str) -> JsonStringToolResponse:
     """
     Creates an invitation. Only course teachers are permitted to create invitations.
 
@@ -922,7 +922,7 @@ def create_invitation(oauth_token: OAuthTokenData, body: str) -> JsonStringToolR
     :return: A JSON string of the created invitation.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         invitation = json.loads(body)
         response = service.invitations().create(body=invitation).execute()
         return json.dumps(response)
@@ -931,7 +931,7 @@ def create_invitation(oauth_token: OAuthTokenData, body: str) -> JsonStringToolR
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def list_invitations(oauth_token: OAuthTokenData, user_id: str = None, course_id: str = None, page_size: int = None, page_token: str = None) -> JsonStringToolResponse:
+def list_invitations(user_id: str = None, course_id: str = None, page_size: int = None, page_token: str = None) -> JsonStringToolResponse:
     """
     Returns a list of invitations that the requesting user is permitted to view, restricted to those that match the list request.
 
@@ -943,7 +943,7 @@ def list_invitations(oauth_token: OAuthTokenData, user_id: str = None, course_id
     :return: A JSON string of the list of invitations.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         response = service.invitations().list(
             userId=user_id,
             courseId=course_id,
@@ -956,7 +956,7 @@ def list_invitations(oauth_token: OAuthTokenData, user_id: str = None, course_id
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def get_invitation(oauth_token: OAuthTokenData, id: str) -> JsonStringToolResponse:
+def get_invitation(id: str) -> JsonStringToolResponse:
     """
     Returns an invitation.
 
@@ -965,7 +965,7 @@ def get_invitation(oauth_token: OAuthTokenData, id: str) -> JsonStringToolRespon
     :return: A JSON string of the invitation.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         response = service.invitations().get(id=id).execute()
         return json.dumps(response)
     except Exception as e:
@@ -973,7 +973,7 @@ def get_invitation(oauth_token: OAuthTokenData, id: str) -> JsonStringToolRespon
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def delete_invitation(oauth_token: OAuthTokenData, id: str) -> JsonStringToolResponse:
+def delete_invitation(id: str) -> JsonStringToolResponse:
     """
     Deletes an invitation.
 
@@ -982,7 +982,7 @@ def delete_invitation(oauth_token: OAuthTokenData, id: str) -> JsonStringToolRes
     :return: An empty JSON string if successful.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         response = service.invitations().delete(id=id).execute()
         return json.dumps(response)
     except Exception as e:
@@ -990,7 +990,7 @@ def delete_invitation(oauth_token: OAuthTokenData, id: str) -> JsonStringToolRes
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def accept_invitation(oauth_token: OAuthTokenData, id: str) -> JsonStringToolResponse:
+def accept_invitation(id: str) -> JsonStringToolResponse:
     """
     Accepts an invitation, removing it and adding the invited user to the teachers or students (as appropriate) of the specified course.
 
@@ -999,7 +999,7 @@ def accept_invitation(oauth_token: OAuthTokenData, id: str) -> JsonStringToolRes
     :return: An empty JSON string if successful.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         response = service.invitations().accept(id=id).execute()
         return json.dumps(response)
     except Exception as e:
@@ -1007,7 +1007,7 @@ def accept_invitation(oauth_token: OAuthTokenData, id: str) -> JsonStringToolRes
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def create_registration(oauth_token: OAuthTokenData, body: str) -> JsonStringToolResponse:
+def create_registration(body: str) -> JsonStringToolResponse:
     """
     Creates a `Registration`.
 
@@ -1016,7 +1016,7 @@ def create_registration(oauth_token: OAuthTokenData, body: str) -> JsonStringToo
     :return: A JSON string of the created registration.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         registration = json.loads(body)
         response = service.registrations().create(body=registration).execute()
         return json.dumps(response)
@@ -1025,7 +1025,7 @@ def create_registration(oauth_token: OAuthTokenData, body: str) -> JsonStringToo
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def delete_registration(oauth_token: OAuthTokenData, registration_id: str) -> JsonStringToolResponse:
+def delete_registration(registration_id: str) -> JsonStringToolResponse:
     """
     Deletes a `Registration`.
 
@@ -1034,7 +1034,7 @@ def delete_registration(oauth_token: OAuthTokenData, registration_id: str) -> Js
     :return: An empty JSON string if successful.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         response = service.registrations().delete(registrationId=registration_id).execute()
         return json.dumps(response)
     except Exception as e:
@@ -1042,7 +1042,7 @@ def delete_registration(oauth_token: OAuthTokenData, registration_id: str) -> Js
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def get_user_profile(oauth_token: OAuthTokenData, user_id: str) -> JsonStringToolResponse:
+def get_user_profile(user_id: str) -> JsonStringToolResponse:
     """
     Returns a user profile.
 
@@ -1051,7 +1051,7 @@ def get_user_profile(oauth_token: OAuthTokenData, user_id: str) -> JsonStringToo
     :return: A JSON string of the user profile.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         response = service.userProfiles().get(userId=user_id).execute()
         return json.dumps(response)
     except Exception as e:
@@ -1059,7 +1059,7 @@ def get_user_profile(oauth_token: OAuthTokenData, user_id: str) -> JsonStringToo
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def create_guardian_invitation(oauth_token: OAuthTokenData, student_id: str, body: str) -> JsonStringToolResponse:
+def create_guardian_invitation(student_id: str, body: str) -> JsonStringToolResponse:
     """
     Creates a guardian invitation, and sends an email to the guardian asking them to confirm that they are the student's guardian.
 
@@ -1069,7 +1069,7 @@ def create_guardian_invitation(oauth_token: OAuthTokenData, student_id: str, bod
     :return: A JSON string of the created guardian invitation.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         invitation = json.loads(body)
         response = service.userProfiles().guardianInvitations().create(studentId=student_id, body=invitation).execute()
         return json.dumps(response)
@@ -1078,7 +1078,7 @@ def create_guardian_invitation(oauth_token: OAuthTokenData, student_id: str, bod
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def get_guardian_invitation(oauth_token: OAuthTokenData, student_id: str, invitation_id: str) -> JsonStringToolResponse:
+def get_guardian_invitation(student_id: str, invitation_id: str) -> JsonStringToolResponse:
     """
     Returns a specific guardian invitation.
 
@@ -1088,7 +1088,7 @@ def get_guardian_invitation(oauth_token: OAuthTokenData, student_id: str, invita
     :return: A JSON string of the guardian invitation.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         response = service.userProfiles().guardianInvitations().get(studentId=student_id, invitationId=invitation_id).execute()
         return json.dumps(response)
     except Exception as e:
@@ -1096,7 +1096,7 @@ def get_guardian_invitation(oauth_token: OAuthTokenData, student_id: str, invita
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def patch_guardian_invitation(oauth_token: OAuthTokenData, student_id: str, invitation_id: str, update_mask: str, body: str) -> JsonStringToolResponse:
+def patch_guardian_invitation(student_id: str, invitation_id: str, update_mask: str, body: str) -> JsonStringToolResponse:
     """
     Modifies a guardian invitation.
 
@@ -1108,7 +1108,7 @@ def patch_guardian_invitation(oauth_token: OAuthTokenData, student_id: str, invi
     :return: A JSON string of the updated guardian invitation.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         invitation = json.loads(body)
         response = service.userProfiles().guardianInvitations().patch(
             studentId=student_id,
@@ -1122,7 +1122,7 @@ def patch_guardian_invitation(oauth_token: OAuthTokenData, student_id: str, invi
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def get_guardian(oauth_token: OAuthTokenData, student_id: str, guardian_id: str) -> JsonStringToolResponse:
+def get_guardian(student_id: str, guardian_id: str) -> JsonStringToolResponse:
     """
     Returns a specific guardian.
 
@@ -1132,7 +1132,7 @@ def get_guardian(oauth_token: OAuthTokenData, student_id: str, guardian_id: str)
     :return: A JSON string of the guardian.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         response = service.userProfiles().guardians().get(studentId=student_id, guardianId=guardian_id).execute()
         return json.dumps(response)
     except Exception as e:
@@ -1140,7 +1140,7 @@ def get_guardian(oauth_token: OAuthTokenData, student_id: str, guardian_id: str)
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def list_guardians(oauth_token: OAuthTokenData, student_id: str, invited_email_address: str = None, page_size: int = None, page_token: str = None) -> JsonStringToolResponse:
+def list_guardians(student_id: str, invited_email_address: str = None, page_size: int = None, page_token: str = None) -> JsonStringToolResponse:
     """
     Returns a list of guardians that the requesting user is permitted to view, restricted to those that match the request.
 
@@ -1152,7 +1152,7 @@ def list_guardians(oauth_token: OAuthTokenData, student_id: str, invited_email_a
     :return: A JSON string of the list of guardians.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         response = service.userProfiles().guardians().list(
             studentId=student_id,
             invitedEmailAddress=invited_email_address,
@@ -1165,7 +1165,7 @@ def list_guardians(oauth_token: OAuthTokenData, student_id: str, invited_email_a
         return json.dumps({"error": str(e)})
 
 @mcp.tool()
-def delete_guardian(oauth_token: OAuthTokenData, student_id: str, guardian_id: str) -> JsonStringToolResponse:
+def delete_guardian(student_id: str, guardian_id: str) -> JsonStringToolResponse:
     """
     Deletes a guardian.
 
@@ -1175,7 +1175,7 @@ def delete_guardian(oauth_token: OAuthTokenData, student_id: str, guardian_id: s
     :return: An empty JSON string if successful.
     """
     try:
-        service = get_service(oauth_token)
+        service = get_service()
         response = service.userProfiles().guardians().delete(studentId=student_id, guardianId=guardian_id).execute()
         return json.dumps(response)
     except Exception as e:

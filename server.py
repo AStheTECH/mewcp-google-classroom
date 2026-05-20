@@ -4,6 +4,7 @@
 import logging
 
 from fastmcp import FastMCP
+from fastmcp_credentials import CredentialMiddleware, HeaderCredentialBackend
 
 from google_classroom_mcp.cli import parse_args
 from google_classroom_mcp.config import configure_logging
@@ -12,7 +13,12 @@ from google_classroom_mcp.tools import register_tools
 configure_logging()
 logger = logging.getLogger("google-classroom-mcp-server")
 
-mcp = FastMCP("CL Google Classroom MCP Server")
+backend = HeaderCredentialBackend()
+
+mcp = FastMCP(
+    "CL Google Classroom MCP Server",
+    middleware=[CredentialMiddleware(backend, "oauth")],
+)
 register_tools(mcp)
 
 # Expose ASGI app for hosting platform's (e.g. Vercel) Python runtime.
