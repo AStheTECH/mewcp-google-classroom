@@ -15,8 +15,8 @@ logger = logging.getLogger("google-classroom-mcp-server")
 
 backend = HeaderCredentialBackend()
 
-mcp = FastMCP("MewCP Google Classroom MCP Server",
-    # stateless_http=True,
+mcp = FastMCP(
+    "MewCP Google Classroom MCP Server",
     middleware=[CredentialMiddleware(backend, "oauth")],
 )
 register_tools(mcp)
