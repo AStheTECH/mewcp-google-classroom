@@ -130,7 +130,8 @@ def register_invitations_tools(mcp: FastMCP) -> None:
         name="list_invitations",
         description=(
             "Lists course invitations the user can view, filtered by `user_id` and `course_id`; at least one of "
-            "the two must be provided. Returns invitations plus `nextPageToken` for paging."
+            "the two must be provided. Returns invitations plus `nextPageToken`; Google can return an empty page "
+            "with a `nextPageToken`, so keep paging until the token is empty."
         ),
         annotations=ToolAnnotations(readOnlyHint=True, openWorldHint=True),
     )

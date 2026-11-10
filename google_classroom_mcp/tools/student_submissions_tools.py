@@ -67,7 +67,8 @@ def register_student_submissions_tools(mcp: FastMCP) -> None:
         description=(
             "Lists student submissions for a course work item, filtered by `states`, `user_id` and `late`. Pass "
             "`-` as `course_work_id` to span all course work in the course; students see only their own work, "
-            "teachers and domain admins see all. Returns submissions plus `nextPageToken`."
+            "teachers and domain admins see all. Returns submissions plus `nextPageToken`. In testing, a DRAFT "
+            "course work ID returned 400 \"Precondition check failed\"; use `-` or a published item."
         ),
         annotations=ToolAnnotations(readOnlyHint=True, openWorldHint=True),
     )
