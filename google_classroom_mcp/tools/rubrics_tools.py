@@ -183,6 +183,9 @@ def register_rubrics_tools(mcp: FastMCP) -> None:
                 return _upstream_err(UpdateCourseWorkRubricResult, tlog, status, current, retry_after)
             rubrics = current.get("rubrics", [])
             before_data = next((r for r in rubrics if rubric_id and r.get("id") == rubric_id), rubrics[0] if rubrics else {})
+            if not before_data:
+                return _err(UpdateCourseWorkRubricResult, tlog, "NOT_FOUND", "No matching rubric found on this course work", 404)
+            query = {"id": before_data["id"]}
             data, status, retry_after = service.execute(lambda s: s.courses().courseWork().updateRubric(courseId=course_id, courseWorkId=course_work_id, **query, updateMask=update_mask or ",".join(body), body=body))
             if 200 <= status < 300:
                 tlog.success()
