@@ -75,7 +75,8 @@ def register_courses_tools(mcp: FastMCP) -> None:
             "action is irreversible — the course and its classwork, announcements and roster links cannot be "
             "recovered. NEVER call this tool autonomously or as part of an automated flow. You MUST stop, tell "
             "the user exactly what will be deleted and that it is permanent, and wait for their explicit written "
-            "confirmation before proceeding."
+            "confirmation before proceeding. In testing, Classroom rejected deleting a PROVISIONED course with "
+            "400; move the course to ARCHIVED or DECLINED with update_course first."
         ),
         annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=True, openWorldHint=True),
     )
