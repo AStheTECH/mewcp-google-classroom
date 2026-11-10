@@ -1,6 +1,7 @@
 fastmcp
 fastmcp-credentials>=0.2.0,<0.3.0
-google-api-python-client>=2.0.0
+pydantic>=2.12
+google-api-python-client>=2.201.0,<3
 google-auth>=2.0.0
 google-auth-httplib2>=0.1.0
-uvicorn>=0.20.0
+python-json-logger>=2.0.0

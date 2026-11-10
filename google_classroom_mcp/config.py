@@ -1,36 +1,59 @@
-import logging
+"""Configuration for MewCP Google Classroom MCP Server."""
 
-SCOPES = [
-    "https://www.googleapis.com/auth/classroom.addons.student",  # 	See and update its own attachments to posts in Google Classroom
-    "https://www.googleapis.com/auth/classroom.addons.teacher",  # 	See, create, and update its own attachments to posts in classes you teach in Google Classroom
-    "https://www.googleapis.com/auth/classroom.announcements",  # 	View and manage announcements in Google Classroom
-    "https://www.googleapis.com/auth/classroom.announcements.readonly",  # 	View announcements in Google Classroom
-    "https://www.googleapis.com/auth/classroom.courses",  # 	See, edit, create, and permanently delete your Google Classroom classes
-    "https://www.googleapis.com/auth/classroom.courses.readonly",  # 	View your Google Classroom classes
-    "https://www.googleapis.com/auth/classroom.coursework.me",  # 	See, create and edit coursework items including assignments, questions, and grades
-    "https://www.googleapis.com/auth/classroom.coursework.me.readonly",  # 	View your course work and grades in Google Classroom
-    "https://www.googleapis.com/auth/classroom.coursework.students",  # 	Manage course work and grades for students in the Google Classroom classes you teach and view the course work and grades for classes you administer
-    "https://www.googleapis.com/auth/classroom.coursework.students.readonly",  # 	View course work and grades for students in the Google Classroom classes you teach or administer
-    "https://www.googleapis.com/auth/classroom.courseworkmaterials",  # 	See, edit, and create classwork materials in Google Classroom
-    "https://www.googleapis.com/auth/classroom.courseworkmaterials.readonly",  # 	See all classwork materials for your Google Classroom classes
-    "https://www.googleapis.com/auth/classroom.guardianlinks.me.readonly",  # 	View your Google Classroom guardians
-    "https://www.googleapis.com/auth/classroom.guardianlinks.students",  # 	View and manage guardians for students in your Google Classroom classes
-    "https://www.googleapis.com/auth/classroom.guardianlinks.students.readonly",  # 	View guardians for students in your Google Classroom classes
-    "https://www.googleapis.com/auth/classroom.profile.emails",  # 	View the email addresses of people in your classes
-    "https://www.googleapis.com/auth/classroom.profile.photos",  # 	View the profile photos of people in your classes
-    "https://www.googleapis.com/auth/classroom.push-notifications",  # 	Receive notifications about your Google Classroom data
-    "https://www.googleapis.com/auth/classroom.rosters",  # 	Manage your Google Classroom class rosters
-    "https://www.googleapis.com/auth/classroom.rosters.readonly",  # 	View your Google Classroom class rosters
-    "https://www.googleapis.com/auth/classroom.student-submissions.me.readonly",  # 	View your course work and grades in Google Classroom
-    "https://www.googleapis.com/auth/classroom.student-submissions.students.readonly",  # 	View course work and grades for students in the Google Classroom classes you teach or administer
-    "https://www.googleapis.com/auth/classroom.topics",  # 	See, create, and edit topics in Google Classroom
-    "https://www.googleapis.com/auth/classroom.topics.readonly",  # 	View topics in Google Classroom
+import logging
+import os
+
+SERVER_VERSION = "v2.0.0"
+BREAKING_CHANGES: list[dict] = [
+    {
+        "version": "v2.0.0",
+        "summary": (
+            "Full rewrite on the typed result envelope. Tools now return {success, statusCode, data, error} "
+            "instead of JSON strings; parameter names are snake_case (course_id, page_size, update_mask); "
+            "patch_* tools are renamed to update_*; update_course now PATCHes (partial update) and the former "
+            "full-replace behaviour moved to replace_course."
+        ),
+    },
 ]
+
+# Scopes the tools call (any one per tool is enough; see each tool's upstream docs).
+# The Google client libraries manage URLs and the HTTP transport, so no API base or timeouts are set here.
+SCOPES = [
+    "https://www.googleapis.com/auth/classroom.announcements",
+    "https://www.googleapis.com/auth/classroom.announcements.readonly",
+    "https://www.googleapis.com/auth/classroom.courses",
+    "https://www.googleapis.com/auth/classroom.courses.readonly",
+    "https://www.googleapis.com/auth/classroom.coursework.me",
+    "https://www.googleapis.com/auth/classroom.coursework.me.readonly",
+    "https://www.googleapis.com/auth/classroom.coursework.students",
+    "https://www.googleapis.com/auth/classroom.coursework.students.readonly",
+    "https://www.googleapis.com/auth/classroom.courseworkmaterials",
+    "https://www.googleapis.com/auth/classroom.courseworkmaterials.readonly",
+    "https://www.googleapis.com/auth/classroom.guardianlinks.me.readonly",
+    "https://www.googleapis.com/auth/classroom.guardianlinks.students",
+    "https://www.googleapis.com/auth/classroom.guardianlinks.students.readonly",
+    "https://www.googleapis.com/auth/classroom.profile.emails",
+    "https://www.googleapis.com/auth/classroom.profile.photos",
+    "https://www.googleapis.com/auth/classroom.push-notifications",
+    "https://www.googleapis.com/auth/classroom.rosters",
+    "https://www.googleapis.com/auth/classroom.rosters.readonly",
+    "https://www.googleapis.com/auth/classroom.student-submissions.me.readonly",
+    "https://www.googleapis.com/auth/classroom.student-submissions.students.readonly",
+    "https://www.googleapis.com/auth/classroom.topics",
+    "https://www.googleapis.com/auth/classroom.topics.readonly",]
 
 
 def configure_logging() -> None:
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-        handlers=[logging.StreamHandler()],
-    )
+    log_level = os.environ.get("LOG_LEVEL", "INFO").upper()
+    try:
+        from pythonjsonlogger import jsonlogger
+        handler = logging.StreamHandler()
+        handler.setFormatter(
+            jsonlogger.JsonFormatter(fmt="%(asctime)s %(name)s %(levelname)s %(message)s")
+        )
+    except ImportError:
+        handler = logging.StreamHandler()
+    root = logging.getLogger()
+    root.handlers.clear()
+    root.addHandler(handler)
+    root.setLevel(log_level)
