@@ -1,0 +1,140 @@
+{
+  "manifest_server_block": true,
+  "planning": true,
+  "infra": true,
+  "tool_groups": {
+    "aliases": true,
+    "announcements": true,
+    "courses": true,
+    "coursework": true,
+    "coursework_materials": true,
+    "guardian_invitations": true,
+    "guardians": true,
+    "invitations": true,
+    "registrations": true,
+    "rubrics": true,
+    "student_group_members": true,
+    "student_groups": true,
+    "student_submissions": true,
+    "students": true,
+    "teachers": true,
+    "topics": true,
+    "user_profiles": true
+  },
+  "built_from": {
+    "aliases": [
+      "create_course_alias.md",
+      "delete_course_alias.md",
+      "list_course_aliases.md"
+    ],
+    "announcements": [
+      "create_announcement.md",
+      "delete_announcement.md",
+      "get_announcement.md",
+      "list_announcements.md",
+      "modify_announcement_assignees.md",
+      "update_announcement.md"
+    ],
+    "courses": [
+      "create_course.md",
+      "delete_course.md",
+      "get_course.md",
+      "get_grading_period_settings.md",
+      "list_courses.md",
+      "replace_course.md",
+      "update_course.md",
+      "update_grading_period_settings.md"
+    ],
+    "coursework": [
+      "create_course_work.md",
+      "delete_course_work.md",
+      "get_course_work.md",
+      "list_course_work.md",
+      "modify_course_work_assignees.md",
+      "update_course_work.md"
+    ],
+    "coursework_materials": [
+      "create_course_work_material.md",
+      "delete_course_work_material.md",
+      "get_course_work_material.md",
+      "list_course_work_materials.md",
+      "update_course_work_material.md"
+    ],
+    "guardian_invitations": [
+      "create_guardian_invitation.md",
+      "get_guardian_invitation.md",
+      "list_guardian_invitations.md",
+      "update_guardian_invitation.md"
+    ],
+    "guardians": [
+      "delete_guardian.md",
+      "get_guardian.md",
+      "list_guardians.md"
+    ],
+    "invitations": [
+      "accept_invitation.md",
+      "create_invitation.md",
+      "delete_invitation.md",
+      "get_invitation.md",
+      "list_invitations.md"
+    ],
+    "registrations": [
+      "create_registration.md",
+      "delete_registration.md"
+    ],
+    "rubrics": [
+      "create_rubric.md",
+      "delete_rubric.md",
+      "get_rubric.md",
+      "list_rubrics.md",
+      "update_course_work_rubric.md",
+      "update_rubric.md"
+    ],
+    "student_group_members": [
+      "create_student_group_member.md",
+      "delete_student_group_member.md",
+      "list_student_group_members.md"
+    ],
+    "student_groups": [
+      "create_student_group.md",
+      "delete_student_group.md",
+      "list_student_groups.md",
+      "update_student_group.md"
+    ],
+    "student_submissions": [
+      "get_student_submission.md",
+      "list_student_submissions.md",
+      "modify_student_submission_attachments.md",
+      "reclaim_student_submission.md",
+      "return_student_submission.md",
+      "turn_in_student_submission.md",
+      "update_student_submission.md"
+    ],
+    "students": [
+      "create_student.md",
+      "delete_student.md",
+      "get_student.md",
+      "list_students.md"
+    ],
+    "teachers": [
+      "create_teacher.md",
+      "delete_teacher.md",
+      "get_teacher.md",
+      "list_teachers.md"
+    ],
+    "topics": [
+      "create_topic.md",
+      "delete_topic.md",
+      "get_topic.md",
+      "list_topics.md",
+      "update_topic.md"
+    ],
+    "user_profiles": [
+      "get_user_profile.md"
+    ]
+  },
+  "validation_rounds": 1,
+  "validation_passed": true,
+  "docs_status_written": false,
+  "readme": false
+}

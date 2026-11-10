@@ -35,8 +35,8 @@ def register_students_tools(mcp: FastMCP) -> None:
     )
     def create_student(
         course_id: str = Field(description="Identifier of the course to create the student in. This identifier can be either the Classroom-assigned identifier or an alias."),
+        user_id: str = Field(description="Identifier of the user. When specified as a parameter of a request, this identifier can be one of the following: * the numeric identifier for the user * the email address of the user * the string literal `\"me\"`, indicating the requesting user"),
         enrollment_code: str | None = Field(default=None, description="Enrollment code of the course to create the student in. This code is required if userId corresponds to the requesting user; it may be omitted if the requesting user has administrative permissions to create students for any user."),
-        user_id: str | None = Field(default=None, description="Identifier of the user. When specified as a parameter of a request, this identifier can be one of the following: * the numeric identifier for the user * the email address of the user * the string literal `\"me\"`, indicating the requesting user"),
     ) -> CreateStudentResult:
         tlog = ToolLogger(logger, "create_student")
         if not course_id.strip():

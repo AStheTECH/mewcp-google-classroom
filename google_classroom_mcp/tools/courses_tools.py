@@ -47,6 +47,7 @@ def register_courses_tools(mcp: FastMCP) -> None:
     )
     def create_course(
         name: str = Field(description="Name of the course. For example, \"10th Grade Biology\". It must be between 1 and 750 characters and a valid UTF-8 string."),
+        owner_id: str = Field(description="The identifier of the owner of a course. When specified as a parameter of a create course request, this field is required. The identifier can be one of the following: * the numeric identifier for the user * the email address of the user * the string literal `\"me\"`, indicating the requesting user This must be set in a create request. Admins can also specify this field in a patch course request to transfer ownership. In other contexts, it is read-only."),
         section: str | None = Field(default=None, description="Section of the course. For example, \"Period 2\". If set, this field must be a valid UTF-8 string and no longer than 2800 characters."),
         subject: str | None = Field(default=None, description="Optional. The subject of the course."),
         room: str | None = Field(default=None, description="Optional room location. For example, \"301\". If set, this field must be a valid UTF-8 string and no longer than 650 characters."),
@@ -57,7 +58,7 @@ def register_courses_tools(mcp: FastMCP) -> None:
         levels: str | None = Field(default=None, description="Optional. Levels for the course. Examples: \"9th grade\", \"Middle school\", \"4th - 5th\", \"K-2\", \"3000\". If set, this field must be a valid UTF-8 string and fewer than 1000 characters. This field can only be cleared using the `PatchCourse` method."),
     ) -> CreateCourseResult:
         tlog = ToolLogger(logger, "create_course")
-        body = {k: v for k, v in {"name": name, "section": section, "subject": subject, "room": room, "courseState": course_state, "id": id, "description": description, "descriptionHeading": description_heading, "levels": levels}.items() if v is not None}
+        body = {k: v for k, v in {"name": name, "section": section, "subject": subject, "room": room, "courseState": course_state, "id": id, "description": description, "descriptionHeading": description_heading, "ownerId": owner_id, "levels": levels}.items() if v is not None}
         try:
             data, status, retry_after = service.execute(lambda s: s.courses().create(body=body))
             if 200 <= status < 300:
@@ -180,6 +181,7 @@ def register_courses_tools(mcp: FastMCP) -> None:
     def replace_course(
         course_id: str = Field(description="Identifier of the course to update. This identifier can be either the Classroom-assigned identifier or an alias."),
         name: str = Field(description="Name of the course. For example, \"10th Grade Biology\". It must be between 1 and 750 characters and a valid UTF-8 string."),
+        owner_id: str = Field(description="The identifier of the owner of a course. When specified as a parameter of a create course request, this field is required. The identifier can be one of the following: * the numeric identifier for the user * the email address of the user * the string literal `\"me\"`, indicating the requesting user This must be set in a create request. Admins can also specify this field in a patch course request to transfer ownership. In other contexts, it is read-only."),
         section: str | None = Field(default=None, description="Section of the course. For example, \"Period 2\". If set, this field must be a valid UTF-8 string and no longer than 2800 characters."),
         subject: str | None = Field(default=None, description="Optional. The subject of the course."),
         room: str | None = Field(default=None, description="Optional room location. For example, \"301\". If set, this field must be a valid UTF-8 string and no longer than 650 characters."),
@@ -191,7 +193,7 @@ def register_courses_tools(mcp: FastMCP) -> None:
         tlog = ToolLogger(logger, "replace_course")
         if not course_id.strip():
             return _err(ReplaceCourseResult, tlog, "VALIDATION_ERROR", "course_id must not be empty", 400)
-        body = {k: v for k, v in {"name": name, "section": section, "subject": subject, "room": room, "courseState": course_state, "description": description, "descriptionHeading": description_heading, "levels": levels}.items() if v is not None}
+        body = {k: v for k, v in {"name": name, "section": section, "subject": subject, "room": room, "courseState": course_state, "description": description, "descriptionHeading": description_heading, "ownerId": owner_id, "levels": levels}.items() if v is not None}
         try:
             before_data, status, retry_after = service.execute(lambda s: s.courses().get(id=course_id))
             if not 200 <= status < 300:
@@ -223,13 +225,14 @@ def register_courses_tools(mcp: FastMCP) -> None:
         course_state: str | None = Field(default=None, description="State of the course. If unspecified, the default state is `PROVISIONED`. One of: ACTIVE, ARCHIVED, PROVISIONED, DECLINED, SUSPENDED."),
         description: str | None = Field(default=None, description="Optional description. For example, \"We'll be learning about the structure of living creatures from a combination of textbooks, guest lectures, and lab work. Expect to be excited!\" If set, this field must be a valid UTF-8 string and no longer than 30,000 characters."),
         description_heading: str | None = Field(default=None, description="Optional heading for the description. For example, \"Welcome to 10th Grade Biology.\" If set, this field must be a valid UTF-8 string and no longer than 3600 characters."),
+        owner_id: str | None = Field(default=None, description="The identifier of the owner of a course. When specified as a parameter of a create course request, this field is required. The identifier can be one of the following: * the numeric identifier for the user * the email address of the user * the string literal `\"me\"`, indicating the requesting user This must be set in a create request. Admins can also specify this field in a patch course request to transfer ownership. In other contexts, it is read-only."),
         levels: str | None = Field(default=None, description="Optional. Levels for the course. Examples: \"9th grade\", \"Middle school\", \"4th - 5th\", \"K-2\", \"3000\". If set, this field must be a valid UTF-8 string and fewer than 1000 characters. This field can only be cleared using the `PatchCourse` method."),
         update_mask: str | None = Field(default=None, description="Comma-separated field mask of the fields to update. Omit to update exactly the fields you provide."),
     ) -> UpdateCourseResult:
         tlog = ToolLogger(logger, "update_course")
         if not course_id.strip():
             return _err(UpdateCourseResult, tlog, "VALIDATION_ERROR", "course_id must not be empty", 400)
-        body = {k: v for k, v in {"name": name, "section": section, "subject": subject, "room": room, "courseState": course_state, "description": description, "descriptionHeading": description_heading, "levels": levels}.items() if v is not None}
+        body = {k: v for k, v in {"name": name, "section": section, "subject": subject, "room": room, "courseState": course_state, "description": description, "descriptionHeading": description_heading, "ownerId": owner_id, "levels": levels}.items() if v is not None}
         if not body:
             return _err(UpdateCourseResult, tlog, "VALIDATION_ERROR", "Provide at least one field to change", 400)
         try:
