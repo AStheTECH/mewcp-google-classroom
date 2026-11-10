@@ -46,10 +46,10 @@ SCOPES = [
 def configure_logging() -> None:
     log_level = os.environ.get("LOG_LEVEL", "INFO").upper()
     try:
-        from pythonjsonlogger import jsonlogger
+        from pythonjsonlogger.json import JsonFormatter
         handler = logging.StreamHandler()
         handler.setFormatter(
-            jsonlogger.JsonFormatter(fmt="%(asctime)s %(name)s %(levelname)s %(message)s")
+            JsonFormatter(fmt="%(asctime)s %(name)s %(levelname)s %(message)s")
         )
     except ImportError:
         handler = logging.StreamHandler()
